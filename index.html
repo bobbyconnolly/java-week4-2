@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Pet Behaviors with Interfaces</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+      h1,
+      h2,
+      h3 {
+        color: #2c3e50;
+        margin-top: 2rem;
+      }
+      pre {
+        background: #f8f9fa;
+        border-radius: 4px;
+        padding: 1rem;
+        overflow-x: auto;
+        border: 1px solid #e9ecef;
+        width: calc(100% - 2rem);
+      }
+      .keyword {
+        color: #0033b3;
+      }
+      .string {
+        color: #067d17;
+      }
+      .comment {
+        color: #8c8c8c;
+      }
+      .number {
+        color: #1750eb;
+      }
+      .type {
+        color: #000080;
+      }
+      .tip {
+        background: #e3f2fd;
+        padding: 1rem;
+        border-radius: 4px;
+        margin: 1rem 0;
+      }
+      .warning {
+        background: #fff3e0;
+        padding: 1rem;
+        border-radius: 4px;
+        margin: 1rem 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Building More Complex Pet Behaviors! 🎭</h1>
+
+    <p>Our pets can now learn tricks and fetch, but real pets can do so much more! Let's add some new behaviors:</p>
+
+    <h2>Playful Pets! 🎮</h2>
+
+    <p>First, let's create an interface for pets that can play with toys:</p>
+
+    <pre><span class="keyword">public interface</span> Playful {
+    <span class="keyword">void</span> playWithToy(String toy);
+    <span class="keyword">default void</span> getExcited() {
+        System.out.println(<span class="string">"*excited pet noises*"</span>);
+    }
+}</pre>
+
+    <div class="tip">
+      <strong>New Feature Alert!</strong> Notice the <code>default</code> method? This provides a default implementation
+      that implementing classes can use or override! 🌟
+    </div>
+
+    <p>Let's implement this in our Dog class:</p>
+
+    <pre><span class="keyword">public class</span> Dog <span class="keyword">extends</span> Pet 
+    <span class="keyword">implements</span> FetchCapable, TrickCapable, Playful {
+    
+    <span class="keyword">private</span> List&lt;String&gt; knownTricks = <span class="keyword">new</span> ArrayList&lt;&gt;();
+    <span class="keyword">private boolean</span> knowsFetch = <span class="keyword">false</span>;
+
+    <span class="comment">// ... existing methods ...</span>
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> playWithToy(String toy) {
+        <span class="keyword">switch</span> (toy.toLowerCase()) {
+            <span class="keyword">case</span> <span class="string">"ball"</span>:
+                System.out.println(getName() + <span class="string">" chases the ball!"</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">"rope"</span>:
+                System.out.println(getName() + <span class="string">" plays tug of war!"</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                System.out.println(getName() + <span class="string">" investigates the "</span> + toy);
+        }
+        setMood(<span class="string">"happy"</span>);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> getExcited() {
+        System.out.println(getName() + <span class="string">" wags tail enthusiastically!"</span>);
+    }
+}</pre>
+
+    <h2>Water-Loving Pets! 🌊</h2>
+
+    <p>Some pets love water activities. Let's create an interface for that:</p>
+
+    <pre><span class="keyword">public interface</span> WaterFriendly {
+    <span class="keyword">void</span> swim();
+    <span class="keyword">boolean</span> enjoysWater();
+    
+    <span class="keyword">default void</span> splash() {
+        <span class="keyword">if</span> (enjoysWater()) {
+            System.out.println(<span class="string">"*happy splashing*"</span>);
+        } <span class="keyword">else</span> {
+            System.out.println(<span class="string">"*reluctant splashing*"</span>);
+        }
+    }
+}</pre>
+
+    <p>Perfect for our Fish class:</p>
+
+    <pre><span class="keyword">public class</span> Fish <span class="keyword">extends</span> Pet <span class="keyword">implements</span> WaterFriendly {
+    <span class="keyword">private</span> WaterType waterType;
+    <span class="keyword">private</span> TankSize tankSize;
+
+    <span class="comment">// ... existing constructor and methods ...</span>
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> swim() {
+        System.out.println(getName() + <span class="string">" glides through the "</span> + 
+                         waterType.toString().toLowerCase() + <span class="string">" water!"</span>);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public boolean</span> enjoysWater() {
+        <span class="keyword">return true</span>;  <span class="comment">// Fish always enjoy water! 🐠</span>
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> splash() {
+        System.out.println(getName() + <span class="string">" makes tiny bubbles!"</span>);
+    }
+}</pre>
+
+    <div class="warning">
+      <strong>Try This:</strong> What happens if you forget to implement one of the required methods? The compiler will
+      help you remember! 🔍
+    </div>
+
+    <h2>Multiple Interfaces in Action! 🎯</h2>
+
+    <p>Now we can have pets that implement multiple behaviors:</p>
+
+    <pre><span class="keyword">public class</span> Lab <span class="keyword">extends</span> Dog <span class="keyword">implements</span> WaterFriendly {
+    <span class="keyword">public</span> Lab(String name, <span class="keyword">int</span> age) {
+        <span class="keyword">super</span>(name, age);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> swim() {
+        System.out.println(getName() + <span class="string">" dives in happily!"</span>);
+        setMood(<span class="string">"happy"</span>);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public boolean</span> enjoysWater() {
+        <span class="keyword">return true</span>;
+    }
+}</pre>
+
+    <h2>Creating the Pet Activity Center! 🎪</h2>
+
+    <p>With our new pet behaviors, we can create fun activities for our pets!</p>
+
+    <pre><span class="keyword">public class</span> PetActivityCenter {
+    <span class="keyword">public static void</span> playtime(Pet pet) {
+        System.out.println(<span class="string">"\n🎮 Play Time with "</span> + pet.getName() + <span class="string">"!"</span>);
+        
+        <span class="comment">// Check if pet is playful</span>
+        <span class="keyword">if</span> (pet <span class="keyword">instanceof</span> Playful) {
+            Playful playfulPet = (Playful) pet;
+            playfulPet.getExcited();
+            playfulPet.playWithToy(<span class="string">"ball"</span>);
+        } <span class="keyword">else</span> {
+            System.out.println(pet.getName() + <span class="string">" doesn't seem interested in toys."</span>);
+        }
+        
+        <span class="comment">// Check if pet likes water activities</span>
+        <span class="keyword">if</span> (pet <span class="keyword">instanceof</span> WaterFriendly) {
+            WaterFriendly waterPet = (WaterFriendly) pet;
+            <span class="keyword">if</span> (waterPet.enjoysWater()) {
+                System.out.println(<span class="string">"Let's try some water activities!"</span>);
+                waterPet.swim();
+                waterPet.splash();
+            }
+        }
+    }
+}</pre>
+
+    <h2>Group Activities! 👥</h2>
+
+    <p>Let's create activities that multiple pets can enjoy together:</p>
+
+    <pre><span class="keyword">public class</span> GroupActivity {
+    <span class="keyword">private</span> List&lt;Pet&gt; participants = <span class="keyword">new</span> ArrayList&lt;&gt;();
+    <span class="keyword">private</span> String activityName;
+
+    <span class="keyword">public</span> GroupActivity(String name) {
+        <span class="keyword">this</span>.activityName = name;
+    }
+
+    <span class="keyword">public void</span> addParticipant(Pet pet) {
+        <span class="keyword">switch</span> (activityName.toLowerCase()) {
+            <span class="keyword">case</span> <span class="string">"pool party"</span>:
+                <span class="keyword">if</span> (pet <span class="keyword">instanceof</span> WaterFriendly) {
+                    WaterFriendly waterPet = (WaterFriendly) pet;
+                    <span class="keyword">if</span> (waterPet.enjoysWater()) {
+                        participants.add(pet);
+                        System.out.println(pet.getName() + <span class="string">" joins the pool party!"</span>);
+                    } <span class="keyword">else</span> {
+                        System.out.println(pet.getName() + <span class="string">" prefers to stay dry."</span>);
+                    }
+                } <span class="keyword">else</span> {
+                    System.out.println(pet.getName() + <span class="string">" can't swim safely."</span>);
+                }
+                <span class="keyword">break</span>;
+
+            <span class="keyword">case</span> <span class="string">"toy party"</span>:
+                <span class="keyword">if</span> (pet <span class="keyword">instanceof</span> Playful) {
+                    participants.add(pet);
+                    System.out.println(pet.getName() + <span class="string">" joins the toy party!"</span>);
+                } <span class="keyword">else</span> {
+                    System.out.println(pet.getName() + <span class="string">" isn't interested in toys."</span>);
+                }
+                <span class="keyword">break</span>;
+        }
+    }
+
+    <span class="keyword">public void</span> startActivity() {
+        <span class="keyword">if</span> (participants.isEmpty()) {
+            System.out.println(<span class="string">"No pets joined the "</span> + activityName + <span class="string">"!"</span>);
+            <span class="keyword">return</span>;
+        }
+
+        System.out.println(<span class="string">"\n🎉 Starting "</span> + activityName + <span class="string">"!"</span>);
+        <span class="keyword">for</span> (Pet pet : participants) {
+            <span class="keyword">switch</span> (activityName.toLowerCase()) {
+                <span class="keyword">case</span> <span class="string">"pool party"</span>:
+                    ((WaterFriendly) pet).swim();  <span class="comment">// Safe cast - we checked earlier</span>
+                    <span class="keyword">break</span>;
+                <span class="keyword">case</span> <span class="string">"toy party"</span>:
+                    ((Playful) pet).playWithToy(<span class="string">"ball"</span>);
+                    <span class="keyword">break</span>;
+            }
+        }
+    }
+}</pre>
+
+    <div class="tip">
+      <strong>Notice:</strong> We use instanceof to check capabilities before casting. The compiler ensures we don't
+      forget these safety checks! 🛡️
+    </div>
+
+    <h2>Let's Test Our Activities! 🎯</h2>
+
+    <pre><span class="keyword">public static void</span> main(String[] args) {
+    <span class="comment">// Create different types of pets</span>
+    Lab buddy = <span class="keyword">new</span> Lab(<span class="string">"Buddy"</span>, <span class="number">3</span>);
+    Cat whiskers = <span class="keyword">new</span> Cat(<span class="string">"Whiskers"</span>, <span class="number">5</span>);
+    Fish nemo = <span class="keyword">new</span> Fish(<span class="string">"Nemo"</span>, <span class="number">1</span>, WaterType.SALTWATER);
+
+    <span class="comment">// Create a pool party</span>
+    GroupActivity poolParty = <span class="keyword">new</span> GroupActivity(<span class="string">"Pool Party"</span>);
+    poolParty.addParticipant(buddy);    <span class="comment">// Lab loves water!</span>
+    poolParty.addParticipant(whiskers); <span class="comment">// Cat says no thanks</span>
+    poolParty.addParticipant(nemo);     <span class="comment">// Fish is definitely in!</span>
+    
+    <span class="comment">// Start the pool party</span>
+    poolParty.startActivity();
+}</pre>
+
+    <div class="warning">
+      <strong>Try This:</strong> What happens if you try to cast a pet to WaterFriendly without checking? The compiler
+      will warn you about potential runtime errors! 🚫
+    </div>
+
+    <h2>Building the Ultimate Pet Daycare! 🏰</h2>
+
+    <p>Let's create a system that can schedule different activities throughout the day:</p>
+
+    <pre><span class="keyword">public class</span> PetDaycare {
+    <span class="keyword">private</span> List&lt;Pet&gt; pets = <span class="keyword">new</span> ArrayList&lt;&gt;();
+    <span class="keyword">private</span> Map&lt;String, List&lt;Pet&gt;&gt; activityGroups = <span class="keyword">new</span> HashMap&lt;&gt;();
+
+    <span class="keyword">public void</span> registerPet(Pet pet) {
+        pets.add(pet);
+        System.out.println(<span class="string">"🎉 Welcome "</span> + pet.getName() + <span class="string">"!"</span>);
+        
+        <span class="comment">// Evaluate pet's capabilities</span>
+        System.out.println(<span class="string">"Checking activities..."</span>);
+        
+        <span class="keyword">if</span> (pet <span class="keyword">instanceof</span> WaterFriendly) {
+            activityGroups.computeIfAbsent(<span class="string">"swimming"</span>, k -> <span class="keyword">new</span> ArrayList&lt;&gt;())
+                         .add(pet);
+        }
+        
+        <span class="keyword">if</span> (pet <span class="keyword">instanceof</span> Playful) {
+            activityGroups.computeIfAbsent(<span class="string">"playroom"</span>, k -> <span class="keyword">new</span> ArrayList&lt;&gt;())
+                         .add(pet);
+        }
+        
+        <span class="keyword">if</span> (pet <span class="keyword">instanceof</span> FetchCapable) {
+            activityGroups.computeIfAbsent(<span class="string">"fetch"</span>, k -> <span class="keyword">new</span> ArrayList&lt;&gt;())
+                         .add(pet);
+        }
+    }
+
+    <span class="keyword">public void</span> runDailyActivities() {
+        System.out.println(<span class="string">"\n📅 Daily Activities Schedule:"</span>);
+        
+        <span class="comment">// Morning: Swimming</span>
+        System.out.println(<span class="string">"\n🌅 Morning Swimming Session"</span>);
+        runGroupActivity(<span class="string">"swimming"</span>, pet -> {
+            WaterFriendly swimmer = (WaterFriendly) pet;
+            swimmer.swim();
+            swimmer.splash();
+        });
+
+        <span class="comment">// Afternoon: Playroom</span>
+        System.out.println(<span class="string">"\n☀️ Afternoon Playroom Time"</span>);
+        runGroupActivity(<span class="string">"playroom"</span>, pet -> {
+            Playful player = (Playful) pet;
+            player.getExcited();
+            player.playWithToy(<span class="string">"ball"</span>);
+        });
+
+        <span class="comment">// Evening: Fetch</span>
+        System.out.println(<span class="string">"\n🌆 Evening Fetch Games"</span>);
+        runGroupActivity(<span class="string">"fetch"</span>, pet -> {
+            FetchCapable fetcher = (FetchCapable) pet;
+            <span class="keyword">if</span> (!fetcher.knowsFetch()) {
+                System.out.println(pet.getName() + 
+                    <span class="string">" is still learning to fetch!"</span>);
+            } <span class="keyword">else</span> {
+                System.out.println(pet.getName() + 
+                    <span class="string">" fetches perfectly!"</span>);
+            }
+        });
+    }
+
+    <span class="keyword">private void</span> runGroupActivity(String activity, 
+                                     Consumer&lt;Pet&gt; action) {
+        List&lt;Pet&gt; group = activityGroups.getOrDefault(activity, 
+                                                   <span class="keyword">new</span> ArrayList&lt;&gt;());
+        
+        <span class="keyword">if</span> (group.isEmpty()) {
+            System.out.println(<span class="string">"No pets for "</span> + activity + <span class="string">"!"</span>);
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">for</span> (Pet pet : group) {
+            System.out.println(<span class="string">"\n🎯 "</span> + pet.getName() + 
+                             <span class="string">"'s turn:"</span>);
+            action.accept(pet);
+        }
+    }
+}</pre>
+
+    <h2>Let's Run Our Daycare! 🎮</h2>
+
+    <pre><span class="keyword">public static void</span> main(String[] args) {
+    PetDaycare daycare = <span class="keyword">new</span> PetDaycare();
+
+    <span class="comment">// Register different pets</span>
+    Lab buddy = <span class="keyword">new</span> Lab(<span class="string">"Buddy"</span>, <span class="number">3</span>);
+    Cat whiskers = <span class="keyword">new</span> Cat(<span class="string">"Whiskers"</span>, <span class="number">5</span>);
+    Fish nemo = <span class="keyword">new</span> Fish(<span class="string">"Nemo"</span>, <span class="number">1</span>, WaterType.SALTWATER);
+    
+    daycare.registerPet(buddy);
+    daycare.registerPet(whiskers);
+    daycare.registerPet(nemo);
+    
+    <span class="comment">// Run the day's activities</span>
+    daycare.runDailyActivities();
+}</pre>
+
+    <h2>Final Challenge: Enhanced Pet Daycare! 🏆</h2>
+
+    <p>Enhance the PetDaycare system with these features:</p>
+
+    <ol>
+      <li>
+        Create an ActivityScheduler class that:
+        <ul>
+          <li>Tracks pet energy levels</li>
+          <li>Ensures pets don't get overtired</li>
+          <li>Schedules rest periods</li>
+        </ul>
+      </li>
+      <li>
+        Add compatibility checking:
+        <ul>
+          <li>Some pets might not play well together</li>
+          <li>Group size limits</li>
+          <li>Skill level matching</li>
+        </ul>
+      </li>
+      <li>
+        Implement progress tracking:
+        <ul>
+          <li>Track new skills learned</li>
+          <li>Monitor participation</li>
+          <li>Generate daily reports</li>
+        </ul>
+      </li>
+    </ol>
+
+    <div class="tip">
+      <strong>Implementation Tips:</strong>
+      <ul>
+        <li>Create new interfaces for energy tracking</li>
+        <li>Use the compiler to ensure safety</li>
+        <li>Think about error cases!</li>
+      </ul>
+    </div>
+
+    <h2>What We've Learned 🎓</h2>
+
+    <ul>
+      <li>Working with multiple interfaces</li>
+      <li>Safe type checking and casting</li>
+      <li>Using interfaces for capabilities</li>
+      <li>Building complex systems</li>
+      <li>Activity scheduling and grouping</li>
+    </ul>
+
+    <div class="warning">
+      <strong>Remember:</strong>
+      <ul>
+        <li>Always check capabilities before casting</li>
+        <li>Let the compiler help you find errors</li>
+        <li>Interfaces represent what a pet can do</li>
+        <li>Different pets can share capabilities</li>
+      </ul>
+    </div>
+
+    <p>Next up: We'll learn about error handling to make our pet systems even more robust! 🚀</p>
+  </body>
+</html>
